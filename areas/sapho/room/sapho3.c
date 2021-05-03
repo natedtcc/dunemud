@@ -2,43 +2,35 @@
 
 #include <mudlib.h>
 inherit ROOM;
-inherit "/players/bebop/area/sapho/includes/include.c";
+inherit "/players/bebop/area/sapho/include/include.c";
 
-void reset(int arg) {
-  
+void reset(int arg)
+{
+
   ::reset(arg);
 
-  place_objects( NPC_DIR + "junkie.c", 3);
+  place_objects(NPC_DIR + "junkie.c", 3);
 
-  if(arg)
-  return;
-
+  if (arg)
+    return;
 
   set_light(1);
   set_short("$BOLD$WHITEA $REDSapho $WHITEDen$OFF");
   set_long(
-  "There are many junkies visible in this room. There are green and yellow\n"
-  +"beanbags strewn across the floor, almost every one of them occupied\n"
-  +"by a comatose junkie. You can hear the sound of lighters clicking and\n"
-  +"pipes puffing every few seconds, and the smoke in this room is pretty\n"
-  +"damn thick. The walls are stained red with tar from the large amount\n"
-  +"amount of $BOLD$REDSapho$OFF being smoked here.\n");
-  
+      "There are many junkies visible in this room. There are green and yellow\n" + "beanbags strewn across the floor, almost every one of them occupied\n" + "by a comatose junkie. You can hear the sound of lighters clicking and\n" + "pipes puffing every few seconds, and the smoke in this room is pretty\n" + "damn thick. The walls are stained red with tar from the large amount\n" + "amount of $BOLD$REDSapho$OFF being smoked here.\n");
+
   add_exit("west", ROOM_DIR + "sapho2.c");
   add_exit("north", ROOM_DIR + "sapho6.c");
-  
+
   add_item(
-  "pipes","Curved, elongated pipes, all full with red-tar Sapho.\n");
-  
+      "pipes", "Curved, elongated pipes, all full with red-tar Sapho.\n");
+
   add_item(
-  "junkies","Most of the beanbags are occupied by them, and you doubt that\n"
-  +"they will be moving any time soon.");
-  
+      "junkies", "Most of the beanbags are occupied by them, and you doubt that\n" + "they will be moving any time soon.");
+
   add_item(
-  "beanbags","Brightly colored and highly sought after.");
-  
+      "beanbags", "Brightly colored and highly sought after.");
+
   add_item(
-  "walls","Covered with a mild red tint and slightly sticky.");
-  
-  
+      "walls", "Covered with a mild red tint and slightly sticky.");
 }
