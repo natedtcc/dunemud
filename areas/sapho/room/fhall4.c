@@ -31,7 +31,7 @@ void reset(int arg)
            "It looks like it could facilitate some kind of small keycard..\n" + "Wonder where you might find that?");
 }
 
-void read(string str)
+int read(string str)
 {
   if (str == "sign")
   {
@@ -40,6 +40,6 @@ void read(string str)
   }
   else
   {
-    return notify_fail("Read what? The sign?")
-  };
+    return notify_fail("Read what? The sign?");
+  }
 }

@@ -16,8 +16,7 @@ void reset(int arg)
 
   keycard_gen();
 
-  place_objects(NPC_DIR + "doorguard.c", 1);
-  place_objects(NPC_DIR + "doorguard2.c", 1);
+  place_objects(NPC_DIR + "guard.c", 2);
 
   if (arg)
     return;
@@ -29,11 +28,12 @@ void reset(int arg)
 
   add_exit("south", ROOM_DIR + "fhall1.c");
   add_exit("north", ROOM_DIR + "fhall3.c");
-  add_exit("west", ROOM_DIR + "pack2.c");
-  add_exit("east", ROOM_DIR + "proc1.c");
+  add_exit("west", ROOM_DIR + "pack3.c");
+  add_exit("east", ROOM_DIR + "proc7.c");
 
   add_item("doors",
-           "There's two doors, one to the west and one two the east. You also see what\n" + "seems to be an elevator way down the hallway.");
+           "There's two doors, one to the west and one two the east. You also see what\n"
+           +"seems to be an elevator way down the hallway.");
 }
 
 void init()

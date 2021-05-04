@@ -11,7 +11,7 @@ void reset(int arg) {
   ::reset(arg);
   if(arg) return;  // Varrack 120404
   set_name("scientist");
-  set_alias("scientist");
+  set_alias(({"atreid", "atreides"}));
   set_short("Advanced $GREENAtreides$OFF Scientist");
   set_long(
     "A scientist for House Atreides, currently working on a food technology"

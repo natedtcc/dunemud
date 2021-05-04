@@ -12,7 +12,7 @@ void reset(int arg)
   set_name("guard");
   set_race("Atreides");
   set_guild_level(1);
-  set_alias(({"guard", "atreid", "atreides"}));
+  set_alias(({"atreid", "atreides"}));
   set_level(295);
   add_money(5000 + random(2000));
 

@@ -1,4 +1,4 @@
-/// pack2.c - Sapho Packaging Area - Bebop 2020
+/// pack5.c - Sapho Packaging Area - Bebop 2020
 
 #include <mudlib.h>
 inherit ROOM;
@@ -13,7 +13,6 @@ void reset(int arg)
 
   if (arg)
     return;
-
   set_light(1);
   set_short("$BOLD$REDSapho $OFF$WHITEPackaging Area$OFF");
   set_long(
@@ -22,10 +21,11 @@ void reset(int arg)
     +"of red-tar sapho around you. The workers are here, standing at their tables, weiging\n" 
     +"different amounts of red-tar depending on it's destination. They seem to tolerate you\n"
     +"being here, but it wouldn't be wise to stay too long.\n");
-
-  add_exit("west", ROOM_DIR + "pack1.c");
-  add_exit("east", ROOM_DIR + "pack3.c");
-  add_exit("south", ROOM_DIR + "pack5.c");
+  
+  add_exit("north", ROOM_DIR + "pack2.c");
+  add_exit("west", ROOM_DIR + "pack4.c");
+  add_exit("east", ROOM_DIR + "pack6.c");
+  add_exit("south", ROOM_DIR + "pack8.c");
 
   add_item(
     "tables",

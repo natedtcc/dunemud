@@ -11,16 +11,19 @@ void reset(status arg)
   if (arg)
     return;
 
-  set_level(150);
+  set_level(100);
   set_name("guard");
   set_race("Imperial");
-  set_alias("doorguard", "guard");
+  set_alias("soldier", "guard");
   set_gender(1);
-  add_money(5000 + random(6000));
+  add_money(3000 + random(1000));
   set_short("Sapho-crazed guard");
 
   set_long(
-      "His eyes glowing red, this guard seems to be in an almost\n" + "berserker-like state. His fingers are stained red with what\n" + "appears to be either sapho or blood. Judging by how he's\n" + "glaring at you, it could honestly be both.");
+      "His eyes glowing blood red, this guard seems to be in an almost\n"
+      +"berserker-like state. His fingers are stained red with what appears\n"
+      +"to be either sapho or blood. Judging by how he's glaring at you, it\n"
+      +"could honestly be both.\n");
 
   set_non_combat_chats(25, ({({"The guard lets out a gutteral scream. You feel terrified.", "echo"}),
                              ({"*PUFF PUFF* The guard rips his sapho pipe and exclaims : HELL YEAH!", "echo"}),

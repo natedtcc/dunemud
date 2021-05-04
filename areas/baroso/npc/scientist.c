@@ -13,7 +13,7 @@ void reset(int arg) {
   if(arg) return;
 
   set_name("scientist");
-  set_alias("scientist");
+  set_alias(({"atreid", "atreides"}));
   set_short("$GREENAtreides$OFF Scientist");
   set_long(
     "A scientist for house Atreides, currently busily working on a marine\n"+

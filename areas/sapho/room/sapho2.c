@@ -19,7 +19,7 @@ void reset(int arg)
   set_long(
       "Welcome to the $REDSapho$OFF den. The first thing that greets you here" + "\nis a very intoxicated man, stumbling around and laughing at you\n" + "maniacaly. As you look around, you notice that there many people\n" + "all holding very elaborate and elongated pipes. They are puffing\n" + "away quite liberally on some unknown, very fruity smelling substance.\n" + "This isn't your every-day sapho den; It seems that the owners of this\n" + "den have discovered a way to both refine and concentrate the famously\n" + "intoxicating beverage into a smokable ball of tar. What a time to be\n" + "alive!\n");
 
-  add_exit("south", ROOM_DIR + "denentrance.c");
+  add_exit("south", ROOM_DIR + "dentry2.c");
   add_exit("west", ROOM_DIR + "sapho1.c");
   add_exit("east", ROOM_DIR + "sapho3.c");
   add_exit("north", ROOM_DIR + "sapho5.c");

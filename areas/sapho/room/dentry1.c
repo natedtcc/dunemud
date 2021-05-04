@@ -14,7 +14,7 @@ void reset(int arg)
   set_short("A short hallway");
   set_long("\nThis is a very short, plainly decorated hallway. Not too\n\
 much to see here. You can smell something burning in the distance. The\n\
-Lounge is to the south. This hallway continues to the north.\n\n");
+Lounge is to the south. This hallway continues to the north.\n");
 
   add_exit("south", "/players/bebop/room/lounge.c");
   add_exit("north", ROOM_DIR + "dentry2.c");

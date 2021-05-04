@@ -10,10 +10,9 @@ void reset(int arg){
     object arm;
     ::reset(arg);
     if(arg) return;
-    
     set_name("tech");
     set_race("Atreides");
-    set_alias("technician");
+    set_alias(({"atreid", "atreides"}));
     set_level(390 + random (8));
     add_money(4000 + random (1000));
   /* Gave this guy some H2H skill, like his Scientist friend -Bebop */

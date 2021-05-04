@@ -30,7 +30,7 @@ void reset(int arg)
   }
 
   // Set the keycard to despawn after 30 minutes
-  set_lifespan(40 * 60, #'check_lifetime, #' complete_lifetime);
+  set_lifespan(40 * 60, #'check_lifetime, #'complete_lifetime);
 }
 
 init()
@@ -49,3 +49,4 @@ int insert_key(string str)
   else
     return notify_fail("Insert what? Keycard?");
 }
+

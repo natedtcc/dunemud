@@ -30,7 +30,7 @@ int check_lifetime() {
   if (!environment());
   else if (roomp(environment()))
     tell_others(this_object(), 
-      "A shady-looking sapho smuggler runs in and grabs"
+      "A shady-looking sapho smuggler runs in and grabs "
       +"a keycard off of the ground!\n");
   else {
     tell_object(environment(),

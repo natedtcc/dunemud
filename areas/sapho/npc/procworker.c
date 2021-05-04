@@ -1,4 +1,4 @@
-/// worker.c - Worker in the sapho facility - Bebop 2020
+/// procworker.c - F in the sapho facility - Bebop 2020
 
 inherit "/obj/player/monster";
 inherit "/players/bebop/area/sapho/include/include.c";
@@ -11,16 +11,19 @@ void reset(status arg)
   if (arg)
     return;
 
-  set_level(160);
+  set_level(150);
   set_name("worker");
-  set_race("Imperial");
-  set_alias("worker", "sard");
+  set_race("none");
   set_gender(1);
-  add_money(3000 + random(6000));
-  set_short("Sapho facility worker");
+  add_money(3000 + random(500));
+  set_short("Packaging Plant Worker");
 
   set_long(
-      "His eyes glowing red, this guard seems to be in an almost\n" + "berserker-like state. His fingers are stained red with what\n" + "appears to be either sapho or blood. Judging by how he's\n" + "glaring at you, it could honestly be both.");
+      "Covered in a red substance and sticky all over, this worker\n"
+    +"is responsible for handling and packaging the red tar that\n"
+    +"is created. To maximize product cleanliness and to make sure\n"
+    +"no employees pocket any of the product, the worker is wearing\n"
+    +"only a dust mask and his underwear. He doesn't look too happy.");
 
   set_non_combat_chats(25, ({({"The guard lets out a gutteral scream. You feel terrified.", "echo"}),
                              ({"*PUFF PUFF* The guard rips his sapho pipe and exclaims : HELL YEAH!", "echo"}),
