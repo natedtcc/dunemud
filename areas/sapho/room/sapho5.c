@@ -46,6 +46,7 @@ init()
 
   add_action("do_buy", "buy");
   add_action("do_list", "list");
+  add_action("do_sell", "sell");
 }
 
 int do_buy(string str)
@@ -110,5 +111,21 @@ int do_buy(string str)
 int do_list(string str)
 {
   write(
-      "Yo, I got you. Just type 'buy sapho' for some red tar, " + "or 'buy pipe'.");
+      "Yo, I got you. Just type 'buy sapho' for some red tar, " + "or 'buy pipe'.\n"
+      +"I also buy large masses of red tar for 50,000 solaris a pop.\n");
+}
+
+
+int do_sell(string str){
+
+  if (str != "sapho" || !present("redtar_loot", this_player())) {
+    return notify_fail(
+      "Pusher Man says: Sorry bub, I only buy the massive chunks of sapho!\n")
+  }
+
+   this_player()->add_money(50000);
+  
+  return 1;
+
+
 }

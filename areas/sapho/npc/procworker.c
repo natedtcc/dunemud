@@ -1,4 +1,4 @@
-/// procworker.c - F in the sapho facility - Bebop 2020
+/// procworker.c - Mobs in the sapho processing area - Bebop 2020
 
 inherit "/obj/player/monster";
 inherit "/players/bebop/area/sapho/include/include.c";
@@ -15,20 +15,20 @@ void reset(status arg)
   set_name("worker");
   set_race("none");
   set_gender(1);
-  add_money(3000 + random(500));
-  set_short("Packaging Plant Worker");
+  add_money(2800 + random(500));
+  set_short("Processing area Worker");
 
   set_long(
-      "Covered in a red substance and sticky all over, this worker\n"
-    +"is responsible for handling and packaging the red tar that\n"
-    +"is created. To maximize product cleanliness and to make sure\n"
-    +"no employees pocket any of the product, the worker is wearing\n"
-    +"only a dust mask and his underwear. He doesn't look too happy.");
+      "This is a red-tar sapho processor, fully decked out in a DuPont Tyvek\n"
+    +"chemical suit, working on getting the next batch of sapho ready for\n"
+    +"processing. You can't see their face through the respirator they're\n"
+    +"wearing, but you get the feeling they're looking you straight in the\n"
+    +"eyes.");
 
-  set_non_combat_chats(25, ({({"The guard lets out a gutteral scream. You feel terrified.", "echo"}),
-                             ({"*PUFF PUFF* The guard rips his sapho pipe and exclaims : HELL YEAH!", "echo"}),
-                             ({"Guard peers at you and says: \"You don't look familiar...\"", "echo"}),
-                             ({"Guard gags and coughs.", "echo"})}));
+  set_non_combat_chats(25, ({({"You see a processor carrying a large beaker full of strange crystals.", "echo"}),
+                             ({"A worker climbs a small rolling staircase and dumps some liquid into a vat.", "echo"}),
+                             ({"Worker says: \"This batch is gonna killer\".", "echo"}),
+                             ({"One of the workers pulls a lever, and a large vacuum pump kicks on.", "echo"})}));
 
   ///armor = clone_object( OBJ_DIR + "armor.c");
   ///weapon = clone_object ( OBJ_DIR + "weapon.c");

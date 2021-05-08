@@ -15,10 +15,12 @@ void reset(int arg)
     return;
 
   set_name("keycard");
-  set_alias("keycard");
+  set_alias(({"keycard", "bebop_vip_keycard"}));
   set_short("A small plastic keycard");
   set_long(
-      "A small plastic keycard, with the letters \"VIP\" printed\n" + "on it. Apparently, this particular keycard is highly sought\n" + "after by workers and junkies alike, and could be stolen from\n" + "you at any time.");
+      "A small plastic keycard, with the letters \"VIP\" printed on it. Apparently, this\n"
+      +"particular keycard is highly sought after by workers and guards alike, and could\n"
+      +"be stolen from you at any time.\nYou could try to 'swipe' it, wherever you can use it...");
   set_weight(0);
   set_value(0);
 
@@ -26,7 +28,8 @@ void reset(int arg)
   if (environment())
   {
     tell_others(environment(),
-                "\nOut of the corner of your eye, you notice a shady looking\n" + "sapho smuggler attempting to sell what appears to be a\n" + "keycard to %N.\n\n", 2);
+        "\nOut of the corner of your eye, you notice a shady looking sapho smuggler\n"
+        +"attempting to sell what appears to be a keycard to %N.\n\n", 2);
   }
 
   // Set the keycard to despawn after 30 minutes

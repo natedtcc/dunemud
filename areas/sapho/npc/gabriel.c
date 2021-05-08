@@ -4,6 +4,7 @@
 */
 
 inherit "/obj/player/monster";
+inherit "/players/bebop/area/sapho/include/include.c";
 
 object weapon, armor;
  
@@ -12,7 +13,7 @@ void reset (status arg)
   ::reset (arg);
   if (arg) return;
   
-  set_level (800);
+  set_level (450);
   set_name ("gabriel");
   set_race ("Imperial");
   set_alias ("gabriel", "kingpin");
@@ -43,14 +44,16 @@ WARNING: BEWARE OF GABRIEL, HE IS A BIG BOY");
   
   set_non_combat_chats (12, ({
     ({ "Gabriel looks you over.", "echo" }),
-    ({ "Gabriel says: \"You heard that new Juice WRLD?\"","echo" }),
-	({ "Gabriel twirls his cane between his fingers.","echo" }),
+    ({ "Gabriel goes: \"Gnome sayin'??\"", "echo" }),
+    ({ "Gabriel asks: \"You heard that new Juice WRLD?\"","echo" }),
+	  ({ "Gabriel twirls his cane between his fingers.","echo" }),
     ({ "Gabriel asks: \"Wha'chu want, ya mark-ass trick?\"", "echo"}),
+    ({ "Gabriel lowers his brows and says: \"Ain't seent chu arount..\"","echo" }),
     ({ "*DING!* Gabriel checks his DMs.","echo" }) }) );
 
 
-  armor = clone_object("/players/bebop/obj/suit.c");
-  weapon = clone_object ("/players/bebop/obj/cane.c");
+  armor = clone_object(OBJ_DIR +"suit.c");
+  weapon = clone_object (OBJ_DIR +"cane.c");
  
   if (armor)
     move_object (armor, this_object ());

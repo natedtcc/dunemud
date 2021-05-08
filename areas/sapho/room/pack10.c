@@ -10,11 +10,13 @@ int hasSearched;
 void reset(int arg)
 {
   // Initial value of hasSearched
-  hasSearched = 0;
+  
   ::reset(arg);
 
+  // Reset ability to search 
+  hasSearched = 0;
   place_objects(NPC_DIR + "guard.c", 2);
-
+  
   if (arg)
     return;
   set_light(1);
@@ -40,37 +42,7 @@ void init()
 {
 ::init();
 
-  add_action("search", "search");
-}
-
-// Search the boxes for some ph4t l00tz
-
-int search(string str)
-{
-  // Make sure the guards are dead!
-  if (guard_check())
-  if(str != "boxes")
-    return notify_fail("Search what?\n");
-	
-  if (str == "boxes" && hasSearched)
-    return notify_fail ("There's nothing in here at the moment..\n");
- 
-  else{
-
-    // Currently 1/3 chance to get loot from a box
-    if (generate_loot_outcome() <= LOOT_CHANCE){
-      write("You search around in the boxes and find a large mass of red tar sapho!\n");
-      place_objects(OBJ_DIR + "redtar_loot", 1, this_player());
-    }
-
-    // Failure..
-    else{
-      write("You search around in the boxes but find nothing! Try again later!\n");
-    }
-    // Disable searching til' next reload
-    hasSearched = 1;
-    return 1;
-  }
+  add_action("do_search", "search");
 }
 
   // Prevent the player from searching initially
@@ -79,12 +51,52 @@ int guard_check()
 {
   if (present("guard"))
   {
-    tell_object(this_player(),
+    return notify_fail(
       "The guard laughs and says \'You should probably step away now.\'\n");
     tell_room(this_object(),
       "\nThe Sapho-crazed guard doesn't like " + this_player()->query_name() 
       + " digging around in the boxes.\n",({this_player()}));
-    return 0;
+    
   }
   return 1;
+}
+
+
+// Search the boxes for some ph4t l00tz
+
+int do_search(string str)
+{
+  // Make sure the guards are dead!
+  if (guard_check()){
+    if(str != "boxes")
+      return notify_fail("Search what?\n");
+
+    // Search cooldown (until next reset)
+    if (str == "boxes" && hasSearched)
+      return notify_fail ("There's nothing in here at the moment..\n");
+
+    // All systems go...
+    else{
+
+      // Winner winner, chicken dinner!  
+      // Currently 1/3 chance to get loot from a box
+      if (generate_loot_outcome() <= LOOT_CHANCE){
+        write(
+          "You search around in the boxes and find a "
+          +"large mass of red tar sapho!\n");
+
+        place_objects(OBJ_DIR + "sapho_loot", 1, this_player());
+      }
+
+      // Failure..
+      else{
+        write(
+          "You search around in the boxes but find "
+          +"nothing! Try again later!\n");
+        }
+      // Disable searching til' next reload
+      hasSearched = 1;
+      return 1;
+    }
+  }
 }

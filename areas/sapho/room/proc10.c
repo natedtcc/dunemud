@@ -21,10 +21,10 @@ void reset(int arg)
       +"due to the overhead lamps, creating the illusion that the racks themselves\n"
       +"are glowing red. Some workers are here loading trays onto the racks, being\n"
       +"careful not to jostle the cooling substance. The fumes here are a little\n"
-      +"less noticable.\n");
+      +"less noticable. You can see the exit in the room to the north.\n");
 
-  add_exit("east", ROOM_DIR + "proc2.c");
-  add_exit("south", ROOM_DIR + "proc12.c");
+  add_exit("east", ROOM_DIR + "proc9.c");
+  add_exit("north", ROOM_DIR + "proc11.c");
 
   add_item(
       "trays", "Large trays of cooling red tar. It still looks quite loose.");

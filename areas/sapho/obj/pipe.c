@@ -1,24 +1,24 @@
+// pipe.c - Smokable red-tar sapho pipe - Bebop 2018
+
 #include <mudlib.h>
 inherit OBJECT;
 
+// Declare vars for handling of packing/smoking
+int packed = 0, smoking = 0;
 
 void reset(int arg)
 {
-
-  int is_packed, smoking = 0;
   ::reset(arg);
   if(arg) return;
 
   set_name ("pipe");
   set_weight (1);
 
-
-
   set_short ("A Sapho Pipe");
   
   set_long ("This pipe is long and narrow, with an aggressive bend about\n"
-  +"halfway down the neck. It looks somewhat like a Sherlock. Perhaps if\n"
-  +"you had some sapho to 'pack', you could 'smoke' this pipe..\n");
+    +"halfway down the neck. It looks somewhat like a Sherlock. Perhaps if\n"
+    +"you had some sapho to 'pack', you could 'smoke' this pipe..\n");
 }
 
 void init ()
@@ -29,59 +29,50 @@ void init ()
   add_action ("do_smoke", "smoke");
 }
 
+// Pack that shit (unless its already packed or you're already smoking)
 int do_pack (string str)
 {
+  if(str != "sapho"){return notify_fail("Pack what? Sapho?\n");}
 
-  if (smoking == 1) {
+  else if (smoking) {
     return notify_fail("You can't pack your pipe while you're smoking!\n");
   }
 
-  if (is_packed == 1){
+  else if (packed){
     return notify_fail("You've already packed your pipe!\n");
   }
 
-  if(!present("sapho"){
+  else if (!present("sapho_smokable", this_player())){
 	  return notify_fail("You don't have any sapho!\n");
   }
-
-  if(str == "sapho"){
-    is_packed = 1;
-    tell_room(environment(this_player()),
-      sprintf("%s packs %s pipe with a chunk sapho.\n",
-        this_player()->query_name(),
-        this_player()->query_possessive()),
-        ({ this_player() }));
-    destruct("sapho");
-    return 1;
-  }
-
-  else {
-    return notify_fail("Pack what? Sapho?\n");
-  }
+  
+  packed = 1;
+  write("You pack your sapho pipe.\n");
+  tell_room(environment(this_player()),
+  sprintf("%s packs %s pipe with a chunk sapho.\n",
+    this_player()->query_name(),
+    this_player()->query_possessive()),
+    ({ this_player() }));
+  // Dest the sapho in inventory
+  call_out("dest_sapho", 1);
+  return 1;
 }
 
+// Smoke that shit (unless you already are)
 int do_smoke (string str)
 {
-  if (pipe_packed == 0) {
-	  return notify_fail("You have not packed your pipe!\n");
-  }
+  if (str != "pipe") {return notify_fail("Smoke what? The pipe?\n");}
+  
+  else if (!packed) {return notify_fail("You have not packed your pipe!\n");}
 
-  if (is_smoking == 1) {
-    return notify_fail("You are already smoking your sapho pipe!\n");
-  }
+  else if (smoking) {return notify_fail("You are already smoking your sapho pipe!\n");}
 
-  if (str == "sapho" || str == "pipe") {
-    is_smoking = 1;
-    tell_object(TP,
-      "You light your lighter and take a long puff off your sapho pipe.\n");
-    call_out("do_smoke_2", 4);
+  smoking = 1;
+  tell_object(TP,
+    "You light your lighter and take a long puff off your sapho pipe.\n");
+  call_out("do_smoke_2", 4);
   return 1;
-  };
-
-  else {
-    return notify_fail("Smoke what? Sapho? The pipe?\n");
-  };
-};
+}
 
 int do_smoke_2()
 {
@@ -129,7 +120,15 @@ int trippin_balls()
     +"                  `\"\"\"\"\"\"\"\"\"\"\"\"\"'\n$OFF"
     +"\nYou're trippin' balls, dude!!\nYou took too much,"
     +" man. You took too much, too much!\n");
+    
+    // init smoking/packed vars
     smoking = 0;
-    is_packed = 0;
+    packed = 0;
+  return 1;
+}
+
+int dest_sapho()
+{
+  destruct("sapho_smokable");
   return 1;
 }
