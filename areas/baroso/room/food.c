@@ -5,6 +5,7 @@
 */
 
 inherit "/room/newroom";
+inherit "/d/Fremen/bebop/sietch/include/area_utils.c";
 
 #include <mudlib.h>
 
@@ -191,7 +192,7 @@ say(TP->QN+" picks some vegetables from the dirt.\n");
 }
 
 int genguard() {
-  object mon,wep,arm;
+  object mon,item,item;
 
   if(!present("guard",TO)&&guardatt==0) {
     write(

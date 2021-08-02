@@ -5,6 +5,7 @@
 */
 
 inherit "/room/newroom";
+inherit "/d/Fremen/bebop/sietch/include/area_utils.c";
 
 void reset(int arg) {
   ::reset(arg);

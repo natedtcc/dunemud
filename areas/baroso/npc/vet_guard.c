@@ -16,7 +16,7 @@ void reset(int arg)
   set_name("guard");
   set_race("Atreides");
   set_alias(({"atreid", "atreides"}));
-  set_level(310 + random(7));
+  set_level(320 + random(7));
   set_hei(20);
   add_money(6000 + random(1500));
   ;

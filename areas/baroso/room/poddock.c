@@ -2,6 +2,7 @@
 /* by Kiza 10-Jul-1996 */
 
 inherit "/room/newroom";
+inherit "/d/Fremen/bebop/sietch/include/area_utils.c";
 
 #include "ansi.h"
 

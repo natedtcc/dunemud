@@ -1,0 +1,52 @@
+***************************************
+*Fremen Sietch / Living Sietch Upgrade*
+***************************************
+
+
+This area was written by Juris.
+The original area is left intact.
+/d/Fremen/juris/sietch/
+
+
+The Fremen Sietch is essentially split into two; the main
+area, and the living sietch area. I tried to keep most of
+the main area intact (mostly because it houses a quest mob),
+while making use of the large (empty) space found in the 
+living sietch.
+
+The mobs in the main area are exactly the same as before,
+with the exception that their armour has been upgraded and
+their numbers have increased slightly. The quest mob is located
+in this area - I tidy'd up the mob (/npc/wisfrem.c), gave him
+a 'listen' command for more quest details, added an explorer
+point to the quest, and made sure the quest rewards are given
+properly.
+
+The mobs in the living sietch have gotten a massive upgrade,
+and are now hovering around level 650-700+. They also have 
+pretty high combat skills (2000 in all defense and crysknife!).
+I also beefed them up with Mreh's combat commands, as well as
+playing with set_bonus_attack to get more hits out of the.
+Also, before my upgrade, there were typically only a few mobs
+(most likely because Juris used a daemon to control population,
+but it was in fact not functional), however now there are roughly
+150 mobs in this area, and the daemon has been removed. All mobs
+are spawned from one fremen object.
+See /sietch/npc/fremen.c && /sietch/include/defines.h for more info
+
+Additionally, the quest has been added to the quest list. it
+was never actually listed (afaik), and it was through sheer
+luck I found it while playing a couple years back. Not sure
+why it missed the list to begin with - it seems like it was
+put together by Sauron (blame him).
+
+Other than that, I just did a bit of modernizing. This is an
+old(er) area, so many rooms had ::reset(arg) missing or used
+legacy stuff like set_al(). Tidy'd up as much as I could, but
+there's a fuckton of typos. I'll leave that in, 'tis DuneMUD
+after all. :)
+
+
+- Bebop
+July 2021
+

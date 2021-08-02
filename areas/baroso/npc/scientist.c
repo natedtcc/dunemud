@@ -18,7 +18,7 @@ void reset(int arg) {
   set_long(
     "A scientist for house Atreides, currently busily working on a marine\n"+
     "project.\n");
-  set_level(380 + random (8));
+  set_level(280 + random (8));
   set_skill("Hand to Hand",1000);
   improve_skill("Hand to Hand",56);
   set_race("Atreides");

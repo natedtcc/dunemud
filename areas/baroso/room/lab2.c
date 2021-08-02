@@ -5,6 +5,7 @@
 */
 
 inherit "/room/newroom";
+inherit "/d/Fremen/bebop/sietch/include/area_utils.c";
 
 #include "/d/Atreid/guild/include/defines.h"
 

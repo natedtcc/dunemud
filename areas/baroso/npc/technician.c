@@ -13,7 +13,7 @@ void reset(int arg){
     set_name("tech");
     set_race("Atreides");
     set_alias(({"atreid", "atreides"}));
-    set_level(390 + random (8));
+    set_level(290 + random (8));
     add_money(4000 + random (1000));
   /* Gave this guy some H2H skill, like his Scientist friend -Bebop */
     set_skill("Hand to Hand",1000);

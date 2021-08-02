@@ -1,0 +1,56 @@
+
+
+                           AREA MAP
+
+                             VIP
+                          (room/vip/)
+                          *V--S*-V*
+                           |  |  |
+                           V  B* V
+                           |     |
+                           V--V--V
+                              |
+                              F*
+                              |
+                    K--K--K   F   P--P--P--P
+                    |  |  |   |   |        |
+                    K--K--K---F---P        P
+                    |  |  |   |   |        |
+                    K--K--K   E*  P        P*--Q*
+                    |  |  |       |        |
+    D--D--D*        K--K--K       P--P--P--P
+    |  |  |        PACKAGING      PROCESSING
+    D--M*-D     room/packaging  room/processing
+    |  |  |
+    D--D--D
+      DEN
+    room/den/
+
+                        LEGEND:
+        
+        M* = drug salesman / wholesale buyer 
+        (room/den/den5.c, npc/pusherman.c)
+        
+        D* = hidden button to move player to E*
+          (room/den/den9.c -> room/fhall1.c)
+        
+        E* = entrance to hidden facility / back to den
+            (room/fhall1.c -> room/den/den9.c) 
+        
+        V* = hidden loot that can be found by players
+                (/room/vip/vip6 & vip8)
+
+        F* = keycard slot for accessing vip area / trap room
+                (rooms/fhall4.c, rooms/deathpit.c,)          
+
+        P* = hidden switch that moves player to quest room
+           (room/processing/proc6.c -> room/questroom.c)
+
+        Q* = hidden quest mob for starting / finishing quest
+             (room/questroom.c, npc/smuggler_quest.c)
+
+        S* = entrance to the boss room
+         (room/vip/vip7.c -> room/vip/saferoom.c)
+
+        B* = boss room / quest item location (search drawer)
+             (rooms/vip/saferoom.c, obj/recipe_quest.c)

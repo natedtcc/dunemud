@@ -4,6 +4,7 @@
 ** cleaned up / upgraded by Bebop July 2018
 */
 inherit "/room/newroom";
+inherit "/d/Fremen/bebop/sietch/include/area_utils.c";
 
 void reset(int arg) {
   

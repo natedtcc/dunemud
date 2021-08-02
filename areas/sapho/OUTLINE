@@ -1,0 +1,121 @@
+
+ ============================
+ ==== Sapho Area Outline ====
+ ====     Bebop 2021     ====
+ ============================
+
+
+
+This area was definitely not inspired by drugs, probably.
+
+   
+   The general idea of this area is that it is a drug processing
+facility within a literal drug den. The owners of the building
+are processing and packaging a refined and smokable version of
+sapho, known as red tar sapho. The boss of the area is hiding
+a recipe which is the basis of a quest in this area.
+
+NOTE: I know fuck all about Dune lore, if you can't tell already.
+
+   The base mob size here is currently 100, but I have made defines
+in /include/area_utils.c (BASE_MOB_LEVEL) for easy mob scaling.
+The BOSS_MODIFIER (also in area_utils) adds additional levels
+to boss,
+
+   Also found in area_utils.c is LOOT_CHANCE (chance of player finding loot in
+boxes) the function generate_loot_chance() which is essentially
+a dice roller, and a function called bounce_player() that defines
+what actions a player can take inside the VIP area.
+
+More on the latter three entries later.
+
+
+This area is really 4 small-ish areas connected by hidden exits
+and hallways, with a few hidden / trap rooms inbetween:
+ 
+ - The Sapho Den
+ - Sapho Processing Area
+ - Sapho Packaging Area
+ - VIP Area
+ 
+   The entrance of the area leads the player to the area known as 
+The Sapho Den (3x3). In here, the player will find very low level
+mobs, and an NPC called the Pusher Man in the center of the area 
+that has drugs / drug paraphenalia for sale. This mob will also 
+buy certain loot items from the player (read on).Not much to this
+specific area, but in the north-eastern-most room there is a hidden
+button that will take the player to the Sapho Facility Hallway.
+
+   Once in the hallway (1x5), the player may proceed north down the
+hallway. In the third room of the hallway, there are exits leading 
+east and west. The eastern exit leads to the Processing Area, and 
+the western exit leads to the Packaging Area. There are also guards
+present in this room, which prevent the player from entering either
+area until they have been killed.
+
+   At the end of this hallway are two notable things: a lever, that
+when pulled, will trap the player, and a 'card slot' for swiping a
+certain keycard. When the player successfully gets the keycard and
+swipes it, they are moved to the VIP Area (more on this later).
+
+
+   The Sapho Packaging Area (3x4) has 12 rooms, with varying mob counts,
+for a total of 34 mobs in the area. Nothing truly notable in this area.
+
+
+   The Sapho Processing Area (4x4 perimeter only) has 12 rooms, each 
+having 3 mobs, for a total of 36 mobs in the area. The only notable
+thing in the area is the hidden quest room / quest master, which can
+be found at: /room/processing/proc6.c, /room/questroom.c and 
+/npc/smuggler_quest.c.
+
+
+   The VIP Area (3x3 perimeter only) has 9 rooms, most rooms without
+mobs, for a total of 8 mobs in the area. There are three notable rooms
+in here: The boss room, which has the item that will complete the area
+quest, and two other rooms that have a special function/feature:
+
+player-> kill bouncers-> search boxes -> 33% chance of getting a sellable item
+                (/room/vip/vip6 and vip8.c)
+             (CHANCE IS SET IN /include/area_utils.c)
+
+The loot found in these boxes currently sells for 60k to the Pusherman
+
+   Also, the only way to access the VIP area is to find the keycard in
+the Processing or Packaging areas. The keycard will despawn over time,
+and if a player loses their keycard after getting into the VIP area,
+they will get thrown out if they attempt to attack or move past the
+bouncers, or search the loot boxes.
+
+
+   The keycard in this area (/obj/keycard.c) is set up to be a bit 
+difficult to find. In /includes/keycard_gen.c, there is a function that
+generates a random integer no bigger than the total number of currently 
+living mobs in the area, and randomly assigns the keycard to a monster.
+NOTE these are only monsters in the Packaging or Processing area.
+
+   When the keycard is cloned, it uses /include/lifetime.c to establish
+a 'lifetime', meaning after a certain amount of time, the keycard will
+disappear and respawn in the same fashion as it did once before, EVEN
+IF THE PLAYER HAS FOUND IT! I wanted it to be annoying!
+
+   Finally, a word about the quest. When the player finds the quest
+mob, they can 'listen to smuggler', which will tell them that the
+smuggler is looking for a recipe for the red tar. If the player has
+the keycard, they can make their way to the VIP area, kill the mobs
+there, and proceed to the boss room (only two rooms in the VIP area). 
+
+   The boss room contains the boss, who has a level modifier of +35%
+base mob size. This room also contains the quest item (recipe), which
+is found only by killing the boss and 'search'ing the drawer of the
+desk in the room.
+
+The player then takes the recipe quest item back to the smuggler and
+'show's it to him, which completes the quest.
+
+
+I guess that's about it. Check out the included MAP file in the base
+directory for a little more information.
+
+
+                                               -Bebop

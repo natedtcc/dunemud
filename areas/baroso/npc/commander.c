@@ -28,7 +28,7 @@ void reset(int arg)
 
   set_name("commander");
   set_alias(({"atreid", "atreides"}));
-  set_level(330);
+  set_level(370);
   set_hei(20);
   add_money(40000 + random(10000));
   set_skill("Long bladed weapons", 1200);
