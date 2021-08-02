@@ -25,7 +25,7 @@ void reset(int arg)
       "\nAs you meander into this room, you are instantly met with\n" + "a thick cloud of smoke and the sound of jazz music bellowing out\n" + "of a nearby jukebox. You are surrounded by comfy looking leather\n" + "sofas, and the walls are covered with paintings and photographs.\n" + "Everyone here looks really....stoned.\n\n" + "Theres a bouncer by the west exit. He looks huge.\n" + "There's a gate to the north, and a portal to Caladan to the East.\n\n");
 
   add_exit("west", "/players/bebop/workroom.c");
-  add_exit("north", "/players/bebop/area/sapho/room/dentry1.c");
+  add_exit("north", "/players/bebop/area/sapho/room/dhall1.c");
   add_exit("portal", "/d/Space/stryder/planets/cal_station");
   add_item("jukebox", "An old style jukebox, filled with records.");
   add_item("records",
