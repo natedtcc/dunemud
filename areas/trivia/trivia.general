@@ -1,0 +1,31 @@
++--  $BOLDGeneral: $CYANTrivia$OFF  ----------------------------------------------------------------+
+|                                                                              |
+|  Welcome to the new DuneMUD Trivia!                                          |
+|                                                                              |
+|  Trivia can now be played any time, as long as there are 4 (four) or more    |
+|  players present in the Trivia Room. The Trivia Room is located directly     |
+|  up from Caladan Astroport. To start a game, go there with 4 people and      |
+|  type: 'trivia start'. This will summon the TriviaBot, which you will        |
+|  tell your answers to.                                                       |
+|                                                                              |
+|  Each game of trivia has a maximum of 50 rounds. The winner is decided       |
+|  either when one or more players have reached 200 points, or if the game     |
+|  has reached the end of the 50th round. In the latter case, the player       |
+|  the most points (if it's higher than a certain threshold) wins the game.    |
+|                                                                              |
+|  You will have 15 seconds to answer each quesion using the 'tell bot x'      |
+|  command, with 'x' being the letter value of the possible answers given      |
+|  with the question. Each correct answer is worth 10 points. You only get     |
+|  one guess!                                                                  |
+|                                                                              |
+|  Keep in mind, that if for some reason a player leaves and the player        |
+|  count should drop below 4, the game will be ended. If the minimum point     |
+|  threshold is met, a winner will be decided. Otherwise, no one wins. One     |
+|  game of trivia should last ~40 minutes, so make sure you're ready!          |
+|                                                                              |
+|  Report any and all bugs found in questions/answers/gameplay by typing:      |
+|  'bug here <issue>' while stading in the Trivia Room.                        |
+|                                                                              |
+|  Happy quizzing!                                                             |
+|                                                                              |
++------------------------------------------------------------------------------+
