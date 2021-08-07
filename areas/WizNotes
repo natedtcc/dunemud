@@ -3,3 +3,5 @@
 
  Bubbs@Dune : but did you know:
       this_player()->query_cmd_path("look")?
+
+Bubbs replies: and then ->add_tell_handler("triviabot", triviaob); ->add_tell_handler("trivia", object)

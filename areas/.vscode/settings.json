@@ -10,6 +10,10 @@
     "string": "c",
     "string_view": "c",
     "system_error": "c",
-    "cmath": "c"
+    "cmath": "c",
+    "*.tcc": "c",
+    "random": "c",
+    "memory_resource": "c",
+    "typeinfo": "c"
   }
 }
