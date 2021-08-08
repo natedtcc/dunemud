@@ -16,8 +16,9 @@ void reset(int arg)
     set_name ("reward");
     set_weight (0);
     set_short ("A Trivia Reward Voucher");
-    set_alias( ({"reward", "voucher", "trivia_reward"}) );
-    set_long ("Long Desc For Reward");
+    set_alias( ({"reward", "voucher", "trivia_reward_voucher"}) );
+    set_long ("This is a Trivia Reward voucher. You can use this to redeem one Trivia\n"
+      +"reward. To use it, visit the Trivia Room and type 'redeem' for a list of prizes.\n");
   }
 }
 

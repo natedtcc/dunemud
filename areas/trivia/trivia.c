@@ -19,12 +19,15 @@ inherit "/obj/player/monster";
 #define API        "/d/Atreid/domain/trivia/question_handler"
 #define HEARER     "/players/arfang/listenner"  // Hearer
 #define MAX_POINTS     200             // How many points do we play for?
-#define MIN_POINTS     200             // Minimum total points of all players
-#define WARMUP_TIME    5               // Time for players to join before start
+#define MIN_POINTS     200             // Point threshold to be reached by all
+#define POINT_AWARD    10              // How many points for a right answer?
+#define WARMUP_TIME    25               // Time for players to join before start
 #define ANSWER_TIME    15              // How long will players be able to answer?
 #define BREAK_TIME     15              // Time between rounds 
 #define OT_WARMUP_TIME 5               // Warmup for sudden death
 #define MAX_ROUNDS     50              // Max number of rounds per game
+#define DEBUG          0
+#define DEBUG_TARGET "bebop"
 
 mapping players,        // ([ name: score; correct guesses, last result ])
         new_questions,  // ([<n>: category; question; letter_answer, full_answer, all_answers])
@@ -55,12 +58,11 @@ int remove_player(string who);   // Remove a player from the game
 int do_help(string who);         // Give a player help
 int control(string str);         // Control commands for the GM
 int do_round();                  // Begin a trivia round
+int player_check();              // Check if there's enough players to play
 int award_points();              // Give points to the winners of the round
 int check_points();              // Check to see if the game is over
 int end_game(string *winners);   // End the game, congratulate winners
 int do_answer(string who, string what);     // Check an answer
-int do_accept();                 // Accept an answer as correct
-int do_reject();                 // Reject an answer as incorrect
 int got_right(string f);         // Got it right!
 int got_wrong(string f);         // Oot it wrong :(
 int do_add(string arg);          // Add points to someone's score
@@ -71,6 +73,7 @@ int register();                  // Register with the tell listener
 int do_score();                  // Show the game score
 int score_overtime();            // Check score of Sudden Death rounds
 int set_questions();             // Set the question mapping to reflect API data
+int control_trivia(string who);   // Give full control to a GM
 
 void do_question();              // (GM command) Show the question, and the time left to answer
 void setup_question();           // Grab a question and parse it into question and answer
@@ -87,7 +90,6 @@ void update_api();               // Update the API data
 
 void reset(int arg)
 {
-  GAMEMASTER = this_player();
   ::reset(arg);
   if (!arg) {
     string short = "$BOLD$REDTriviaBot$OFF v2 ";
@@ -123,10 +125,9 @@ complexities of Trivia with ease! If you need help, type\n\
 // Start the trivia game, let everyone know we're here
 void startup()
 {
-  tell_room(environment(this_object()), parse_ansi("$BOLD$GREENTrivia Started!\n"
-      +"$CYANType 'tell trivia /help' for more information, or 'help trivia' for rules.$OFF\n"));
+  // Pulled this in favor of shout - maybe ...
   //HEARER->listen("A new game of Trivia is beginning!\n");
-  round = 50;
+  round = 1;
   players = ([ ]);
   old_questions = ({ });
 
@@ -138,7 +139,11 @@ init()
 {
   ::init();
 
-  add_action("control","trivia");
+  if (DEBUG){
+    add_action("full_control", "trivia");
+  }
+
+  else add_action("control","trivia");
 
 }
 
@@ -184,13 +189,6 @@ int do_answer(string who, string what)
     return 1;
   }
 
-  // // added by Seeker 20010122
-  // if(member(waiting, who) != -1)
-  // {
-  //   tell_object(p, "TriviaBot tells you: Your answer is already being processed.\n");
-  //   return 1;
-  // }
-
   what = lower_case(what);
   temp_letter = lower_case(letter_answer);
   temp_full = lower_case(full_answer);
@@ -210,27 +208,17 @@ int do_answer(string who, string what)
 
 int add_player(string who)
 {
-  object player;
+  object player = find_player(who);
 
-  if(!players) { players = ([ ]); }
-
-  if(!who)
-  {
-    write("No argument specified.\n");
-    return 1;
+  if (is_overtime){
+    return notify_fail("Sorry, you cannot join during Sudden Death!\n");
   }
 
-  player = find_player(who);
+  if(!players) { players = ([ ]); }
 
   if(!player)
   {
     write("Could not find target.\n");
-    return 1;
-  }
-
-  if(!present(player, environment(this_object())))
-  {
-    tell_object(player, "TriviaBot tells you: You must come to me to play!\n");
     return 1;
   }
 
@@ -251,13 +239,13 @@ int add_player(string who)
     "TriviaBot announces: $CYAN"+capitalize(player->query_name())
     +"$OFF has joined Trivia!\n"));
   tell_object(player, 
-  "TriviaBot tells you: type 'tell trivia /help' for more information.$OFF\n");
+  "TriviaBot tells you: type 'help trivia' for more information.$OFF\n");
   return 1;
 }
 
 int remove_player(string who)
 {
-  object player;
+  object player = find_player(who);
 
   if(!players){
     players = ([ ]);
@@ -270,8 +258,6 @@ int remove_player(string who)
     write("TriviaBot tells you: You weren't playing!\n");
     return 1;
   }
-
-  player = find_player(who);
 
   if(!player)
   {
@@ -303,38 +289,33 @@ int do_help(string who)
     return 1;
   }
 
-  tell_object(player, "TriviaBot tells you: Lorem Ipsum'.\n"+
-              "TriviaBot tells you: Lorem Ipsum.\n"+
-              "TriviaBot tells you: Lorem Ipsum.\n"+
-              "'tell trivia <answer>.\n");
+  tell_object(player, 
+              "TriviaBot tells you: Hey, I'm TriviaBot. I'll present you with 50 questions.\n"+
+              "TriviaBot tells you: If you get one right, you get $BOLD$GREEN"+POINT_AWARD+"$OFF points.\n"+
+              "TriviaBot tells you: Points are not $BOLD$REDdeducted$OFF for wrong answers.\n"+
+              "TriviaBot tells you: The first player to get $BOLD$CYAN"+MAX_POINTS+"$OFF points is the winner!\n"+
+              "TriviaBot tells you: You can 'tell' me your answers. Questions are in multiple choice format.\n"+
+              "TriviaBot tells you: For example: 'tell triviabot b', if you think B is the right answer.\n"+
+              "TriviaBot tells you: Good luck! See 'help trivia for information.\n");
   return 1;
 }
+
+// Trivia controls
 
 int control(string str)
 {
   if(!str){
-
-    // Return a list of trivia commands so the GM
-    // actually knows they exist - Bebop 07/29/21
     return notify_fail(
       "\nTrivia Commands:\n\n"
       +"'trivia join'  - Join the current game of Trivia.\n"
       +"'trivia quit'  - Leave the current game of Trivia.\n"
       +"'trivia score' - Check the scoreboard.\n\n");  }  
-   
 
-  string cmd,
-         arg,
-         player = this_player()->query_name();
+  string player = lower_case(this_player()->query_name());
 
   int double;
 
-  if(sscanf(str, "%s %s", cmd, arg) == 2)
-    double = 1;
-  if(!double)
-    sscanf(str, "%s", cmd);
-
-  switch(cmd)
+  switch(str)
   {
     case "score": do_score(); break;
     case "join": add_player(player); break;
@@ -347,54 +328,13 @@ int control(string str)
   return 1;
 }
 
-// int full_control(string str)
-// {
-//   if(!str){
-
-//     // Return a list of trivia commands so the GM
-//     // actually knows they exist - Bebop 07/29/21
-//     return notify_fail(
-//       "\nTrivia Commands:\n\n"
-//       +"'trivia round' - Start a round (generates a question and starts the timer)\n"
-//       +"'trivia automate <on/off> - Automate rounds, with "+BREAK_TIME+" seconds between rounds.\n"
-//       +"'trivia score' - Check the scoreboard.\n"
-//       +"'trivia add <player> <amnt>' - Give a player points.\n"
-//       +"'trivia subtract <player> <amnt> - Take points away from a player.'\n"
-//       +"'trivia question' - Repeat the question to the room.\n"
-//       +"'trivia end' - End the game immediately.\n\n");
-//   }     
-
-//   string cmd,
-//          arg;
-
-//   int double;
-
-//   if(sscanf(str, "%s %s", cmd, arg) == 2)
-//     double = 1;
-//   if(!double)
-//     sscanf(str, "%s", cmd);
-
-//   switch(cmd)
-//   {
-//     case "round": do_round(); break;
-//     case "score": do_score(); break;
-//     case "accept": do_accept(); break;
-//     case "reject": do_reject(); break;
-//     case "add": do_add(arg); break;
-//     case "subtract": do_subtract(arg); break;
-//     case "question": do_question(); break;
-//     case "end": quit_trivia(); break;
-//     default:
-//       write("TriviaBot tells you: Command not available.\n");
-//       break;
-//   }
-//   return 1;
-// }
-
 // Do a round of trivia!
 int do_round()
 {
-  //if (!players){return notify_fail("Cannot start a round without players!\n");}
+  if (!players){
+    return notify_fail("$BOLDCannot start a round without players! Aborting!$OFF\n");
+    destroy_game();
+    }
 
   reset_last_result();
   int max_rec;
@@ -422,6 +362,7 @@ int do_round()
   setup_question();
 
   // added by Seeker
+  // removed by Bebop
   // waiting = ({});
 
   number_checked = number_guessed = 0;
@@ -486,8 +427,24 @@ void display_question()
   say(output);
 }
 
+
+// This shit is really hard to read, so I (and Sauron) apologize.
+// Display the score
 int do_score()
 {
+  // Format testing
+  // players += (["Spips": 100; 0; 0,]);
+  // players += (["Corona": 20; 0; 0,]);
+  // players += (["Abbazabba": 30; 0; 0,]);
+  // players += (["Giraffe": 40; 0; 0,]);
+  // players += (["Jabroni": 0; 0; 0,]);
+  // players += (["Carlos": 50; 0; 0,]);
+  // players += (["Ronald": 0; 0; 0,]);
+  // players += (["Bepp": 140; 0; 0,]);
+
+  if (sizeof(players)<1){
+    return notify_fail("There are no players to show on the scoreboard!\n");
+  }
   string *names,
          *left,
          *right,
@@ -506,15 +463,9 @@ int do_score()
   top = ([ ]);
   bottom = ([ ]);
 
-  if(game_over)
-  {
-    write("TriviaBot tells you: The game is already over.\n");
-    return 1;
-  }
-
-  output += sprintf("Trivia Scores for round %d\n", round);
-  output += sprintf("%'-'60s\n", "-");
-  say(output);
+  output += sprintf("\n$BOLDTrivia Scores for round $CYAN%d$WHITE\n%'-'60s", round, "-");
+  output += sprintf("$BOLD$OFF\n", "-");
+  write(parse_ansi(output));
   output = "";
 
   left = ({ });
@@ -527,7 +478,7 @@ int do_score()
     for(i=0;i<sizeof(names);i++)
     {
       if(member(left, names[i]) == -1)
-        right += ({ names[i], });
+        right += ({ capitalize(names[i]) });
     }
 
     for(i=0; i < sizeof(names)/2+1; i++)
@@ -544,9 +495,12 @@ int do_score()
   }
   else
   {
-     say(sprintf("%-3s%-15s%-4d(%d%%) \n", "1.", capitalize(names[0]), players[names[0], 0],
-         players[names[0], 1]*100/(round > 0 ? round : 1)));
-     say(sprintf("%'-'60s\n", "-"));
+    write(parse_ansi(sprintf(
+      "$BOLD%-3s$CYAN%-15s$GREEN%-4d$WHITE(%d%%) \n",
+      "1.", capitalize(names[0]), players[names[0], 0],
+      players[names[0], 1]*100/(round > 0 ? round : 1))));
+
+     write(parse_ansi(sprintf("$BOLD%'-'60s$OFF\n\n", "-")));
      return 1;
   }
 
@@ -556,22 +510,34 @@ int do_score()
   right = m_indices(bottom);
   right = sort_array(right, "by_high_score");
 
+  // Scores are printed like this:
+  // 1. Bebop          0   (0%)
+
   for(i=0; i<howmany; i++)
   {
-      output = "("+to_string(top[left[i], 1]*100/(round > 1 ? round : 1))+"\%)";
-      say(sprintf("%-3s%-15s%-4d%-8s", to_string(i+1)+".", capitalize(left[i]),
-          top[left[i], 0], output));
+      output = "$BOLD("+to_string(top[left[i], 1]*100/(round > 1 ? round : 1))+"\%)";
+      
+      // Highlight the leader
+      if (i==0 && players[names[i], 0] != 0){
+        write(parse_ansi(sprintf(
+        "$BOLD%-3s$RED%-15s$OFF$BOLD$YELLOW%-4d$WHITE%-8s", 
+        to_string(i+1)+".", capitalize(left[i]), top[left[i], 0], output)));
+      }
+
+      else write(parse_ansi(sprintf(
+        "$BOLD%-3s$CYAN%-15s$GREEN%-4d$WHITE%-8s", 
+        to_string(i+1)+".", capitalize(left[i]), top[left[i], 0], output)));
 
       if(sizeof(right) > i)
       {
         output = "("+to_string(top[right[i], 1]*100/(round > 1 ? round : 1))+"\%)";
-        say(sprintf("%-3s%-15s%-4d%-8s", to_string(sizeof(left)+1+i)+".",
-            capitalize(right[i]), bottom[right[i], 0],
-            "("+to_string(bottom[right[i], 1]*100/(round > 1 ? round : 1))+"%)"));
+        write(parse_ansi(sprintf(" $BOLD%-3s$CYAN%-15s$GREEN%-4d$WHITE%-8s", 
+          to_string(sizeof(left)+1+i)+".",capitalize(right[i]), bottom[right[i], 0],
+            "("+to_string(bottom[right[i], 1]*100/(round > 1 ? round : 1))+"%)")));
       }
-      say("\n");
+      write("\n");
   }
-  say(sprintf("%'-'60s\n", "-"));
+  write(parse_ansi(sprintf("$BOLD%'-'60s$OFF\n\n", "-")));
 
   return 1;
 }
@@ -579,49 +545,6 @@ int do_score()
 status by_high_score(string s, string f)
 {
   return players[s, 0] < players[f, 0];
-}
-
-int do_accept()
-{
-  // string player;
-
-  // if(!sizeof(waiting) || waiting[0] == 0)
-  // {
-  //   write("TriviaBot tells you: You have already checked everyone!\n");
-  //   number_checked = number_guessed;
-  //   return 1;
-  // }
-
-  // player = waiting[0];
-  // write("TriviaBot tells you: You accept $GREEN"+capitalize(player)+"$OFF's answer.\n");
-  // got_right(player);
-  // waiting -= ({ player });
-  // number_checked++;
-  // if(number_checked == number_guessed && in_round == 0)
-  //   award_points();
-  return 1;
-}
-
-int do_reject()
-{
-  // string player;
-
-  // if(!sizeof(waiting) || waiting[0] == 0)
-  // {
-  //   write("TriviaBot tells you: You've already checked everyone!\n");
-  //   number_checked = number_guessed;
-  //   return 1;
-  // }
-
-  // player = waiting[0];
-  // write("You reject $YELLOW"+capitalize(player)+"$OFF's answer.\n");
-
-  // got_wrong(player);
-  // waiting -= ({ player });
-  // number_checked++;
-  // if(number_checked == number_guessed && in_round == 0)
-  //   award_points();
-  // return 1;
 }
 
 int got_right(string who)
@@ -796,27 +719,18 @@ int award_points()
     return 1;
   }
 
-  // Points gained on correct answer
-  award_amount = 10;
-
   // Award the winnings to the winners
   // Also add to the total_awarded count
   for(i=0; i<sizeof(winners); i++)
   {
-    total_points += award_amount;
-    players[winners[i], 0] += award_amount;
+    total_points += POINT_AWARD;
+    players[winners[i], 0] += POINT_AWARD;
   }
 
   // Announce the winnings
-  say(parse_ansi("$BOLD$YELLOW"+award_amount+"$WHITE points awarded to "));
-  for(i=0; i<sizeof(winners); i++)
-  {
-    if(i == sizeof(winners)-1)
-      say(parse_ansi("$BOLD$CYAN"+capitalize(winners[i])+"$OFF$BOLD."));
-    else
-      say(parse_ansi("$BOLD$CYAN"+capitalize(winners[i])+", "));
-  }
-  say("\n");
+  string winner_string = _implode(winners, "$WHITE,$CYAN ", "$WHITE and$CYAN ");
+  say(parse_ansi("$BOLD$YELLOW"+award_amount+"$WHITE points awarded to $CYAN"
+    + winner_string + "$WHITE.$OFF\n"));
 
   answered = ([ ]);
 
@@ -970,6 +884,15 @@ int end_game(string *winners)
   return 1;
 }
 
+// Check that we have enough players (doesn't apply to rounds
+// 20 and after or if we're in Sudden Death)
+int player_check(){
+  if ((sizeof(players)<3 && round < 20) && !is_overtime){
+    return 0;
+  }
+  return 1;
+}
+
 // Kill the game (die die die)
 void destroy_game(){
   say(parse_ansi(
@@ -1068,20 +991,20 @@ void start_game_automation(){
     shout(parse_ansi("\n\n$BOLDTrivia is starting in $GREEN"
       +WARMUP_TIME+"$OFF$BOLD seconds!$OFF\n"
       +"$BOLDHead to the Trivia room (up from Caladan AP) and type:\n"
-      +"'$CYANtell trivia /join$WHITE' "
+      +"'$CYANtrivia join$WHITE' "
       +"to join!\n\n$OFF"));
 
     call_out("warn_game_automation", to_int(WARMUP_TIME*0.834));
   }
 }
 
-
+// Prepare our questions while warning trivia is starting
 void warn_game_automation(){
   if (is_automated()){
     shout(parse_ansi("\n\n$BOLDTrivia is starting in $GREEN"
       +WARMUP_TIME/6+"$OFF$BOLD seconds!$OFF\n"
       +"$BOLDHead to the Trivia room (up from Caladan AP) and type:\n"
-      +"'$CYANtell trivia /join$WHITE' "
+      +"'$CYANtrivia join$WHITE' "
       +"to join!\n\n$OFF"));
       
     // Get the questions from the API
@@ -1101,16 +1024,17 @@ void warn_game_automation(){
 
 //&& sizeof(players) > 2)
 
+// Check that we have enough players, then start the game
 void finish_game_automation(){
-  if(is_automated()) {
+  if(is_automated() && player_check()) {
     do_round();
   }
 
   else {
     tell_room(environment(this_object()), 
-      parse_ansi("$BOLDNot enough players joined!\n"
+      parse_ansi("$BOLD\nNot enough players joined!\n"
       +"$REDAborting$WHITE game!$OFF\n"));
-    quit_trivia();
+    destroy_game();
   }
 }
 
@@ -1133,9 +1057,15 @@ void warn_round_automation(){
   }
 }
 
+// Make sure we have enough players to continue
 void finish_round_automation(){
-  if(is_automated()) {
+  if(is_automated()&& player_check()) {
     do_round();
+  }
+  else {
+    tell_room(environment(this_object()), 
+      "$BOLDNot enough players to continue! Shutting down.\n");
+    destroy_game();
   }
 }
 
@@ -1159,7 +1089,49 @@ int register() {
     "Unable to set tell handler. Please consult a wizard.\n");
 }
 
-int set_rounds(int i){
+// Process tells
+
+int hear_tell(string user, string mesg, int reply){ 
+  string      who = lower_case(user->query_name());
+  if(!present(find_player(who), environment(this_object()))){
+    return 0;
+  }
+  map(filter_objects(users(), "id", getuid()), #'tell_object,
+    sprintf("%#Q::hear_tell(%#Q, %#Q, %#Q);\n", this_object(), user, mesg, reply));
+    do_answer(who, mesg);
+    if(find_player(who)) find_player(who)->add_sp(1);
+  return 1;
+  }
+
+// Update the API's data
+void update_api(){
+  //load_object(API)->update_trivia_data();
+  
+}
+
+// Set our question mapping to the API's data
+int set_questions(){
+  // new_questions = load_object(API)->query_trivia_data();
+  new_questions = load_object(API)->get_dummy_data();
+  if(sizeof(new_questions) < 1){
+    tell_room(environment(this_object()),
+      "Trivia cancelled! Question list empty! Please MudMail Bebop!\n");
+  return 0;
+  }
+  else return 1;
+}
+
+// Some getters
+
+int get_num_players(){
+  return sizeof(players);
+}
+
+int get_total_points(){
+  return total_points;
+}
+
+int set_round(int i){
   round = i;
   return round;
 }
@@ -1172,56 +1144,7 @@ string did_answer(string who){
   return players[who, 2];
 }
 
-// Process input
-
-int hear_tell(string user, string mesg, int reply){ 
-  string      who = lower_case(user->query_name());
-  map(filter_objects(users(), "id", getuid()), #'tell_object,
-    sprintf("%#Q::hear_tell(%#Q, %#Q, %#Q);\n", this_object(), user, mesg, reply));
-    
-    switch (mesg)
-    {
-      case "/help": do_help(who); break;
-      case "/join": add_player(who); break;
-      case "/quit": remove_player(who); break;
-      case "/scores": do_score(); break;
-      default: do_answer(who, mesg); break;
-    }
-    if(find_player(who)) find_player(who)->add_sp(1);
-
-  return 1;
-  }
-
-// Update the API's data
-void update_api(){
-  //load_object(API)->update_trivia_data();
-  
-}
-
-// Set our question mapping to the API's data
-int set_questions(){
-  new_questions = load_object(API)->get_dummy_data();
-  if(sizeof(new_questions) < 1){
-    tell_room(environment(this_object()),
-      "Trivia cancelled! Question list empty! Please MudMail Bebop!\n");
-  return 0;
-  }
-  else return 1;
-  // new_questions = load_object(API)->query_trivia_data();
-}
-
-int get_num_players(){
-  return sizeof(players);
-}
-
-int get_total_points(){
-  return total_points;
-}
-
-int control_trivia(string who){
-  if (wizardp(find_player(who))){
-    GAMEMASTER = find_player(who);
-    return 1;
-  }
-  else return notify_fail("Only wizards can be GM!");
+int set_points(string who, int val){
+  players[who, 0] = val;
+  return players[who, 0];
 }

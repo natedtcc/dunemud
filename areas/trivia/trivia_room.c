@@ -35,8 +35,8 @@ is in session. Enjoy the game!\n";
 init()
 {
   ::init();
-  call_out("welcome_message", 1);
   add_action("trivia_start", "start");
+  add_action("redeem_reward", "redeem");
 }
 
 // Start a game of trivia
@@ -94,4 +94,21 @@ void start_trivia(){
   is_spawning = 0;
   move_object(TRIVIA_NPC, this_object());
   call_other(TRIVIA_NPC, "startup");
+}
+
+int redeem_reward (string str){
+  if (!str || str==""){
+    return notify_fail(
+      "You may redeem your Trivia Vouchers for prizes here!\n\n"
+      +"Some of the current prizes include:\n\n"
+      +"'solaris'    -  Receive 5 million solaris.\n"
+      +"'exp'        -  Receive 15 million experience.\n"
+      +"'multi'      -  Receive a 2x experience multiplier for 24 hours.\n"
+      +"'unpk'       -  Remove PK status without incurring death penalties.\n"
+      +"'addslots'   -  Adds 2 slots to a weapon / armour (NO GUILD GEAR! MAX 10!)\n"
+      +"'sockets'    -  A random assortment of 50 sockets.\n"
+      +"'title'      -  A special title only for Trivia Masters.\n"
+      +"\n\nThis list is subject to change. No refunds. All exchanges final.\n");
+
+  }
 }
