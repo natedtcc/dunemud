@@ -8,11 +8,15 @@ specifically for MUDs.
 
 Play now!
 
-telnet://dunemud.net:6789
+telnet://dunemud.net:6788
 
 or from CLI:
 
 telnet dunemud.net 6789
+
+If you're using Mudlet or Tinyfugue (or any other client that supports TLS):
+
+dunemud.net 6788
 
 More on LPC:
 
